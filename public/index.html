@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AssignHub – Find Your Assignment</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <video autoplay muted loop id="bgVideo">
+  <source src="particles-bg.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
+  <!-- In your index.html header -->
+<header>
+  <h1>📘 AssignHub</h1>
+  <div class="search-admin-row">
+    <input type="text" id="searchInput" placeholder="Search assignments..." />
+    <a href="/admin/login.html" class="admin-button">Admin Panel</a>
+  </div>
+</header>
+
+  <main>
+    <section id="assignmentsList">
+      <!-- Assignment cards will be injected here -->
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 AssignHub. All rights reserved.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

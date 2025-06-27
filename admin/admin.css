@@ -1,0 +1,179 @@
+/* === General Reset === */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* === Body Styling === */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #eef1f5;
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+/* === Video Background (No Blur) === */
+#bgVideo {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  z-index: -1;
+  opacity: 1;     /* Adjust if needed */
+  filter: none;     /* No blur */
+}
+
+/* === Centering for Login Page === */
+.center-page {
+  align-items: center;
+  height: 100vh;
+}
+
+/* === Login and Dashboard Containers === */
+.login-container,
+.dashboard-container,
+.form-container {
+  position: relative;
+  z-index: 1;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 2rem;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  /* Added styles for form-container */
+  background: rgba(255, 255, 255, 0.18); /* semi-transparent */
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 16px;
+  padding: 2.5rem 2.5rem 2rem 2.5rem;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* === Heading and Top Bar === */
+h2 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+/* === Input Fields & Textareas === */
+input,
+textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 15px;
+}
+
+/* Optional: make input fields stand out */
+.login-container input,
+.form-container input {
+  background: rgba(255,255,255,0.7);
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 0.7rem 1rem;
+  margin-bottom: 1rem;
+  width: 100%;
+  font-size: 1rem;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* === Buttons === */
+button {
+  width: 100%;
+  padding: 10px;
+  background-color: #1a73e8;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 15px;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #1558c0;
+}
+
+/* === Logout Button Specific Styling === */
+#logoutBtn {
+  width: auto;
+  padding: 8px 14px;
+  background-color: #e74c3c;
+  font-size: 0.9rem;
+}
+
+#logoutBtn:hover {
+  background-color: #c0392b;
+}
+
+/* === Error Message Styling === */
+.error {
+  color: red;
+  text-align: center;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+/* === Responsive Layout for Small Screens === */
+  padding: 1rem;
+  margin: 1rem 0;
+  border-radius: 6px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+
+
+.assignment-card h4 {
+  margin-top: 0;
+}
+
+.crud-buttons button {
+  margin-right: 10px;
+  padding: 6px 10px;
+  background-color: #1a73e8;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.crud-buttons button:last-child {
+  background-color: #e74c3c;
+}
+
+.edit-form {
+  margin-top: 1rem;
+}
+
+.edit-form input,
+.edit-form textarea {
+  width: 100%;
+  margin: 5px 0;
+  padding: 6px;
+}
+
+.edit-form button {
+  margin-top: 5px;
+  margin-right: 5px;
+}
