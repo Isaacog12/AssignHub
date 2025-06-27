@@ -70,6 +70,11 @@ header input[type="text"] {
   border: none;
 }
 
+.admin-button,
+.assignment-card a {
+  transition: all 0.2s ease-in-out;
+}
+
 .admin-button {
   display: inline-block;
   padding: 0.5rem 1.2rem;
@@ -167,4 +172,19 @@ footer {
   margin-top: auto;
   border-radius: 0;
   box-shadow: 0 -2px 8px rgba(0,0,0,0.07);
+}
+@media (max-width: 600px) {
+  header input[type="text"] {
+    width: 180px;
+    font-size: 0.9rem;
+  }
+
+  .admin-button {
+    padding: 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  .assignment-card {
+    padding: 1rem;
+  }
 }

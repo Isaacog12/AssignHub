@@ -6,16 +6,16 @@
   <link rel="stylesheet" href="admin.css" />
 </head>
 <body class="center-page">
-    <video autoplay muted loop id="bgVideo">
-  <source src="/particles-bg.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+  <video autoplay muted loop id="bgVideo">
+    <source src="/particles-bg.mp4" type="video/mp4" />
+    Your browser does not support the video tag.
+  </video>
 
   <div class="login-container">
     <h2>Admin Login</h2>
-    <form id="loginForm">
-      <input type="text" id="username" placeholder="Username" required />
-      <input type="password" id="password" placeholder="Password" required />
+    <form id="loginForm" action="#">
+      <input type="text" id="username" placeholder="Username" required autocomplete="off" />
+      <input type="password" id="password" placeholder="Password" required autocomplete="off" />
       <button type="submit">Login</button>
       <p id="loginError" class="error"></p>
     </form>

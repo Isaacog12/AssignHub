@@ -6,36 +6,37 @@
   <link rel="stylesheet" href="admin.css" />
 </head>
 <body>
-  <!-- Background Video -->
   <video autoplay muted loop id="bgVideo">
     <source src="/particles-bg.mp4" type="video/mp4">
     Your browser does not support the video tag.
   </video>
 
-  <!-- Dashboard Container -->
   <div class="dashboard-container">
-    
     <!-- Top Bar -->
     <div class="top-bar">
-      <h2>Upload Assignment</h2>
+      <h1>📁 AssignHub Dashboard</h1>
       <button id="logoutBtn">Logout</button>
     </div>
 
     <!-- Upload Form -->
-    <form id="uploadForm" enctype="multipart/form-data">
-      <input type="text" name="title" placeholder="Assignment Title" required />
-      <input type="text" name="subject" placeholder="Subject" required />
-      <textarea name="description" placeholder="Description" required></textarea>
-      <input type="file" name="file" accept=".pdf,.docx,.ppt,.pptx,.xlsx,.xls" required />
-      <button type="submit">Upload</button>
-      <p id="uploadMsg"></p>
-    </form>
+    <section class="upload-section">
+      <h2>📤 Upload New Assignment</h2>
+      <form id="uploadForm" enctype="multipart/form-data">
+        <input type="text" name="title" placeholder="Assignment Title" required />
+        <input type="text" name="subject" placeholder="Subject" required />
+        <textarea name="description" placeholder="Short Description" required></textarea>
+        <input type="file" name="file" accept=".pdf,.docx,.ppt,.pptx,.xlsx,.xls" required />
+        <button type="submit">Upload</button>
+        <p id="uploadMsg"></p>
+      </form>
+    </section>
 
-    <!-- Uploaded Assignments List -->
-    <hr />
-    <h3>Uploaded Assignments</h3>
-    <div id="assignmentList"></div>
-
+    <!-- Assignment List -->
+    <section class="list-section">
+      <h2>📚 Uploaded Assignments</h2>
+      <input type="text" id="searchInput" placeholder="Search assignments..." />
+      <div id="assignmentList"></div>
+    </section>
   </div>
 
   <script src="admin.js"></script>

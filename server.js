@@ -3,7 +3,7 @@ const multer = require("multer");
 const cors = require("cors");
 const fs = require("fs");
 const path = require("path");
-require("dotenv").config();
+const sqlite3 = require("sqlite3").verbose();
 
 const app = express();
 const PORT = 3000;
@@ -13,10 +13,27 @@ app.use(cors());
 app.use(express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use("/admin", express.static("admin")); // Admin login/dashboard
-app.use("/uploads", express.static("uploads")); // Serve uploaded files
+app.use("/admin", express.static("admin"));
+app.use("/uploads", express.static("uploads"));
 
-// === Multer (file uploads) setup ===
+// === SQLite Database Setup ===
+const DB_PATH = path.join(__dirname, "uploads", "assignments.db");
+const db = new sqlite3.Database(DB_PATH);
+
+db.serialize(() => {
+  db.run(`
+    CREATE TABLE IF NOT EXISTS assignments (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      title TEXT,
+      subject TEXT,
+      description TEXT,
+      file TEXT,
+      uploadedAt TEXT
+    )
+  `);
+});
+
+// === Multer Setup ===
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, "uploads/"),
   filename: (req, file, cb) => {
@@ -26,85 +43,88 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// === Metadata JSON ===
-const METADATA_FILE = path.join(__dirname, "uploads", "metadata.json");
-if (!fs.existsSync(METADATA_FILE)) fs.writeFileSync(METADATA_FILE, "[]");
-
-// === POST /upload (Create) ===
+// === POST /upload ===
 app.post("/upload", upload.single("file"), (req, res) => {
   const { title, subject, description } = req.body;
   const file = req.file;
 
   if (!file) return res.status(400).json({ message: "File is required." });
 
-  const newEntry = {
-    title,
-    subject,
-    description,
-    file: `/uploads/${file.filename}`,
-    uploadedAt: new Date().toISOString()
-  };
+  const filePath = `/uploads/${file.filename}`;
+  const uploadedAt = new Date().toISOString();
 
-  const data = JSON.parse(fs.readFileSync(METADATA_FILE));
-  data.push(newEntry);
-  fs.writeFileSync(METADATA_FILE, JSON.stringify(data, null, 2));
-
-  res.json({ message: "Assignment uploaded successfully!" });
+  db.run(
+    "INSERT INTO assignments (title, subject, description, file, uploadedAt) VALUES (?, ?, ?, ?, ?)",
+    [title, subject, description, filePath, uploadedAt],
+    function (err) {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ message: "Database error." });
+      }
+      res.json({ message: "Assignment uploaded successfully!" });
+    }
+  );
 });
 
-// === GET /assignments (Read) ===
+// === GET /assignments ===
 app.get("/assignments", (req, res) => {
-  const data = JSON.parse(fs.readFileSync(METADATA_FILE));
-  res.json(data);
+  db.all("SELECT * FROM assignments ORDER BY id DESC", (err, rows) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ message: "Failed to fetch assignments." });
+    }
+    res.json(rows);
+  });
 });
 
-// === PUT /assignments/:filename (Update metadata) ===
-app.put("/assignments/:filename", (req, res) => {
-  const { filename } = req.params;
+// === PUT /assignments/:id ===
+app.put("/assignments/:id", (req, res) => {
+  const { id } = req.params;
   const { title, subject, description } = req.body;
 
-  let data = JSON.parse(fs.readFileSync(METADATA_FILE));
-  let updated = false;
-
-  data = data.map(item => {
-    if (item.file.endsWith(filename)) {
-      updated = true;
-      return { ...item, title, subject, description };
+  db.run(
+    "UPDATE assignments SET title = ?, subject = ?, description = ? WHERE id = ?",
+    [title, subject, description, id],
+    function (err) {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ message: "Failed to update assignment." });
+      }
+      if (this.changes === 0) {
+        return res.status(404).json({ message: "Assignment not found." });
+      }
+      res.json({ message: "Assignment updated successfully." });
     }
-    return item;
+  );
+});
+
+// === DELETE /assignments/:id ===
+app.delete("/assignments/:id", (req, res) => {
+  const { id } = req.params;
+
+  // Get the file path to delete it
+  db.get("SELECT file FROM assignments WHERE id = ?", [id], (err, row) => {
+    if (err || !row) {
+      return res.status(404).json({ message: "Assignment not found." });
+    }
+
+    const filePath = path.join(__dirname, row.file);
+
+    db.run("DELETE FROM assignments WHERE id = ?", [id], function (err) {
+      if (err) {
+        return res.status(500).json({ message: "Failed to delete assignment." });
+      }
+
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+
+      res.json({ message: "Assignment deleted successfully." });
+    });
   });
-
-  if (!updated) {
-    return res.status(404).json({ message: "Assignment not found." });
-  }
-
-  fs.writeFileSync(METADATA_FILE, JSON.stringify(data, null, 2));
-  res.json({ message: "Assignment updated successfully." });
 });
 
-// === DELETE /assignments/:filename (Delete assignment) ===
-app.delete("/assignments/:filename", (req, res) => {
-  const { filename } = req.params;
-
-  let data = JSON.parse(fs.readFileSync(METADATA_FILE));
-  const assignment = data.find(a => a.file.endsWith(filename));
-
-  if (!assignment) {
-    return res.status(404).json({ message: "Assignment not found." });
-  }
-
-  data = data.filter(a => !a.file.endsWith(filename));
-  fs.writeFileSync(METADATA_FILE, JSON.stringify(data, null, 2));
-
-  const filePath = path.join(__dirname, "uploads", filename);
-  if (fs.existsSync(filePath)) {
-    fs.unlinkSync(filePath);
-  }
-
-  res.json({ message: "Assignment deleted successfully." });
-});
-
-// === Start server ===
+// === Start Server ===
 app.listen(PORT, () => {
-  console.log(`✅ AssignHub server running at http://localhost:${PORT}`);
+  console.log(`✅ AssignHub (SQLite) running at http://localhost:${PORT}`);
 });

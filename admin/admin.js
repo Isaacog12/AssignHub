@@ -13,7 +13,7 @@ if (window.location.pathname.includes("login.html")) {
   });
 }
 
-// DASHBOARD CRUD
+// DASHBOARD CRUD + SEARCH
 if (window.location.pathname.includes("dashboard.html")) {
   if (localStorage.getItem("loggedIn") !== "true") {
     window.location.href = "login.html";
@@ -22,6 +22,9 @@ if (window.location.pathname.includes("dashboard.html")) {
   const uploadForm = document.getElementById("uploadForm");
   const uploadMsg = document.getElementById("uploadMsg");
   const assignmentList = document.getElementById("assignmentList");
+  const searchInput = document.getElementById("searchInput");
+
+  let assignments = [];
 
   uploadForm.addEventListener("submit", async function (e) {
     e.preventDefault();
@@ -31,7 +34,7 @@ if (window.location.pathname.includes("dashboard.html")) {
       const result = await res.json();
       uploadMsg.textContent = result.message;
       uploadForm.reset();
-      fetchAssignments();
+      await fetchAssignments();
     } catch (err) {
       uploadMsg.textContent = "Upload failed!";
     }
@@ -41,72 +44,92 @@ if (window.location.pathname.includes("dashboard.html")) {
     assignmentList.innerHTML = "<p>Loading...</p>";
     try {
       const res = await fetch("/assignments");
-      const assignments = await res.json();
-      assignmentList.innerHTML = "";
-      if (assignments.length === 0) return assignmentList.innerHTML = "<p>No assignments uploaded yet.</p>";
-
-      assignments.reverse().forEach(a => {
-        const fname = a.file.split("/").pop();
-        assignmentList.innerHTML += `
-          <div class="assignment-card">
-            <h4>${a.title}</h4>
-            <p><strong>Subject:</strong> ${a.subject}</p>
-            <p>${a.description}</p>
-            <a href="${a.file}" target="_blank">View</a>
-            <div class="crud-buttons">
-              <button onclick="editAssignment('${fname}')">Edit</button>
-              <button onclick="deleteAssignment('${fname}')">Delete</button>
-            </div>
-            <div id="edit-${fname}" class="edit-form" style="display:none;">
-              <input type="text" id="title-${fname}" value="${a.title}" />
-              <input type="text" id="subject-${fname}" value="${a.subject}" />
-              <textarea id="desc-${fname}">${a.description}</textarea>
-              <button onclick="submitEdit('${fname}')">Save</button>
-              <button onclick="cancelEdit('${fname}')">Cancel</button>
-            </div>
-          </div>
-        `;
-      });
+      assignments = await res.json();
+      displayAssignments(assignments);
     } catch {
       assignmentList.innerHTML = "<p>Error loading assignments.</p>";
     }
   }
 
-  window.deleteAssignment = async function (filename) {
+  function displayAssignments(data) {
+    assignmentList.innerHTML = "";
+    if (!data.length) {
+      assignmentList.innerHTML = "<p>No assignments found.</p>";
+      return;
+    }
+
+    data.forEach(a => {
+      const card = document.createElement("div");
+      card.className = "assignment-card";
+      card.innerHTML = `
+        <h4>${a.title}</h4>
+        <p><strong>Subject:</strong> ${a.subject}</p>
+        <p>${a.description}</p>
+        <a href="${a.file}" target="_blank">View</a>
+        <div class="crud-buttons">
+          <button onclick="editAssignment(${a.id})">Edit</button>
+          <button onclick="deleteAssignment(${a.id})">Delete</button>
+        </div>
+        <div id="edit-${a.id}" class="edit-form" style="display:none;">
+          <input type="text" id="title-${a.id}" value="${a.title}" />
+          <input type="text" id="subject-${a.id}" value="${a.subject}" />
+          <textarea id="desc-${a.id}">${a.description}</textarea>
+          <button onclick="submitEdit(${a.id})">Save</button>
+          <button onclick="cancelEdit(${a.id})">Cancel</button>
+        </div>
+      `;
+      assignmentList.appendChild(card);
+    });
+  }
+
+  window.deleteAssignment = async function (id) {
     if (!confirm("Delete this assignment?")) return;
-    const res = await fetch(`/assignments/${filename}`, { method: "DELETE" });
+    const res = await fetch(`/assignments/${id}`, { method: "DELETE" });
     const data = await res.json();
     alert(data.message);
-    fetchAssignments();
+    await fetchAssignments();
   };
 
-  window.editAssignment = function (f) {
-    document.getElementById(`edit-${f}`).style.display = "block";
+  window.editAssignment = function (id) {
+    document.getElementById(`edit-${id}`).style.display = "block";
   };
 
-  window.cancelEdit = function (f) {
-    document.getElementById(`edit-${f}`).style.display = "none";
+  window.cancelEdit = function (id) {
+    document.getElementById(`edit-${id}`).style.display = "none";
   };
 
-  window.submitEdit = async function (f) {
-    const title = document.getElementById(`title-${f}`).value;
-    const subject = document.getElementById(`subject-${f}`).value;
-    const desc = document.getElementById(`desc-${f}`).value;
+  window.submitEdit = async function (id) {
+    const title = document.getElementById(`title-${id}`).value;
+    const subject = document.getElementById(`subject-${id}`).value;
+    const desc = document.getElementById(`desc-${id}`).value;
 
-    const res = await fetch(`/assignments/${f}`, {
+    const res = await fetch(`/assignments/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ title, subject, description: desc }),
     });
     const data = await res.json();
     alert(data.message);
-    fetchAssignments();
+    await fetchAssignments();
   };
 
   document.getElementById("logoutBtn").addEventListener("click", () => {
     localStorage.removeItem("loggedIn");
     window.location.href = "login.html";
   });
+
+  // ✅ Real-time Search
+  if (searchInput) {
+    searchInput.addEventListener("input", () => {
+      const query = searchInput.value.toLowerCase();
+      const filtered = assignments.filter(a =>
+        a.title.toLowerCase().includes(query) ||
+        a.subject.toLowerCase().includes(query) ||
+        a.description.toLowerCase().includes(query)
+      );
+      displayAssignments(filtered);
+    });
+  }
 
   fetchAssignments();
 }

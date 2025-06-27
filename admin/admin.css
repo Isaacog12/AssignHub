@@ -1,20 +1,21 @@
-/* === General Reset === */
+/* === Global Reset === */
 * {
-  box-sizing: border-box;
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 
-/* === Body Styling === */
+/* === Body === */
 body {
-  font-family: Arial, sans-serif;
+  font-family: "Segoe UI", sans-serif;
   background-color: #eef1f5;
   padding: 2rem;
   display: flex;
   justify-content: center;
+  min-height: 100vh;
 }
 
-/* === Video Background (No Blur) === */
+/* === Video Background === */
 #bgVideo {
   position: fixed;
   top: 0;
@@ -23,47 +24,26 @@ body {
   height: 100vh;
   object-fit: cover;
   z-index: -1;
-  opacity: 1;     /* Adjust if needed */
-  filter: none;     /* No blur */
+  opacity: 1;
+  filter: none;
 }
 
-/* === Centering for Login Page === */
-.center-page {
-  align-items: center;
-  height: 100vh;
-}
-
-/* === Login and Dashboard Containers === */
+/* === Containers === */
 .login-container,
 .dashboard-container,
 .form-container {
-  position: relative;
-  z-index: 1;
-  background: rgba(255, 255, 255, 0.95);
-  padding: 2rem;
-  border-radius: 10px;
-  width: 100%;
-  max-width: 400px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  /* Added styles for form-container */
-  background: rgba(255, 255, 255, 0.18); /* semi-transparent */
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+  background: rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.18);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-radius: 16px;
-  padding: 2.5rem 2.5rem 2rem 2.5rem;
+  padding: 2rem;
+  max-width: 800px;
+  width: 100%;
   margin: auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 }
 
-/* === Heading and Top Bar === */
-h2 {
-  margin: 0;
-  font-size: 1.3rem;
-}
-
+/* === Top Bar === */
 .top-bar {
   display: flex;
   justify-content: space-between;
@@ -71,26 +51,26 @@ h2 {
   margin-bottom: 1.5rem;
 }
 
-/* === Input Fields & Textareas === */
+.top-bar h1 {
+  font-size: 1.8rem;
+  color: #333;
+}
+
+/* === Headings === */
+h2 {
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+  color: #1a73e8;
+}
+
+/* === Inputs & Textareas === */
 input,
 textarea {
   width: 100%;
   padding: 10px;
-  margin-bottom: 15px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 15px;
-}
-
-/* Optional: make input fields stand out */
-.login-container input,
-.form-container input {
-  background: rgba(255,255,255,0.7);
+  margin-bottom: 1rem;
   border: 1px solid #ccc;
   border-radius: 6px;
-  padding: 0.7rem 1rem;
-  margin-bottom: 1rem;
-  width: 100%;
   font-size: 1rem;
 }
 
@@ -101,15 +81,14 @@ textarea {
 
 /* === Buttons === */
 button {
-  width: 100%;
   padding: 10px;
   background-color: #1a73e8;
   color: white;
   border: none;
-  border-radius: 5px;
-  cursor: pointer;
+  border-radius: 6px;
+  font-size: 1rem;
   font-weight: bold;
-  font-size: 15px;
+  cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
@@ -117,11 +96,10 @@ button:hover {
   background-color: #1558c0;
 }
 
-/* === Logout Button Specific Styling === */
+/* === Logout Button === */
 #logoutBtn {
-  width: auto;
-  padding: 8px 14px;
   background-color: #e74c3c;
+  padding: 8px 14px;
   font-size: 0.9rem;
 }
 
@@ -129,51 +107,110 @@ button:hover {
   background-color: #c0392b;
 }
 
-/* === Error Message Styling === */
+/* === Error Messages === */
 .error {
   color: red;
-  text-align: center;
   font-size: 14px;
   margin-top: 10px;
+  text-align: center;
 }
 
-/* === Responsive Layout for Small Screens === */
-  padding: 1rem;
-  margin: 1rem 0;
-  border-radius: 6px;
-  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+/* === Upload Form === */
+.upload-section {
+  margin-bottom: 2rem;
+}
 
+.upload-section form {
+  display: flex;
+  flex-direction: column;
+}
+
+/* === Assignment List Section === */
+.list-section input[type="text"] {
+  padding: 10px;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+/* === Assignment Card === */
+.assignment-card {
+  background-color: #fff;
+  border-left: 5px solid #1a73e8;
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  transition: transform 0.2s ease;
+}
+
+.assignment-card:hover {
+  transform: translateY(-3px);
+}
 
 .assignment-card h4 {
-  margin-top: 0;
+  margin-bottom: 0.3rem;
+  color: #1a73e8;
+}
+
+.assignment-card p {
+  margin-bottom: 0.2rem;
+  color: #333;
+}
+
+.assignment-card a {
+  display: inline-block;
+  margin-top: 0.5rem;
+  color: #1a73e8;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+/* === CRUD Buttons === */
+.crud-buttons {
+  margin-top: 0.8rem;
 }
 
 .crud-buttons button {
   margin-right: 10px;
-  padding: 6px 10px;
-  background-color: #1a73e8;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
+  padding: 6px 12px;
+  font-size: 0.9rem;
 }
 
 .crud-buttons button:last-child {
   background-color: #e74c3c;
 }
 
+/* === Edit Form === */
 .edit-form {
   margin-top: 1rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #ccc;
 }
 
 .edit-form input,
 .edit-form textarea {
-  width: 100%;
-  margin: 5px 0;
-  padding: 6px;
+  margin-bottom: 0.6rem;
 }
 
 .edit-form button {
-  margin-top: 5px;
-  margin-right: 5px;
+  margin-top: 0.5rem;
+  margin-right: 6px;
+}
+
+/* === Responsive === */
+@media screen and (max-width: 600px) {
+  .dashboard-container {
+    padding: 1rem;
+  }
+
+  .top-bar {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .top-bar h1 {
+    font-size: 1.5rem;
+  }
 }
