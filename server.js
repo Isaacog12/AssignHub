@@ -125,6 +125,6 @@ app.delete("/assignments/:id", (req, res) => {
 });
 
 // === Start Server ===
-app.listen(PORT, () => {
-  console.log(`✅ AssignHub (SQLite) running at http://localhost:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`✅ AssignHub running at http://localhost:${PORT}`);
 });
