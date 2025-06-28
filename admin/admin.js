@@ -1,17 +1,31 @@
 // LOGIN
 if (window.location.pathname.includes("login.html")) {
-  document.getElementById("loginForm").addEventListener("submit", function (e) {
+  document.getElementById("loginForm").addEventListener("submit", async function (e) {
     e.preventDefault();
-    const user = document.getElementById("username").value;
-    const pass = document.getElementById("password").value;
-    if (user === "admin" && pass === "1234") {
-      localStorage.setItem("loggedIn", "true");
-      window.location.href = "dashboard.html";
-    } else {
-      document.getElementById("loginError").textContent = "Invalid credentials!";
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+
+    try {
+      const res = await fetch("/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        localStorage.setItem("loggedIn", "true");
+        window.location.href = "dashboard.html";
+      } else {
+        document.getElementById("loginError").textContent = data.message;
+      }
+    } catch (err) {
+      document.getElementById("loginError").textContent = "Server error.";
     }
   });
 }
+
 
 // DASHBOARD CRUD + SEARCH
 if (window.location.pathname.includes("dashboard.html")) {

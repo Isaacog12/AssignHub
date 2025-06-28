@@ -128,3 +128,18 @@ app.delete("/assignments/:id", (req, res) => {
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`✅ AssignHub running at http://localhost:${PORT}`);
 });
+require("dotenv").config(); // already present at the top
+
+// POST /login (authentication)
+app.post("/login", (req, res) => {
+  const { username, password } = req.body;
+
+  const adminUser = process.env.ADMIN_USERNAME;
+  const adminPass = process.env.ADMIN_PASSWORD;
+
+  if (username === adminUser && password === adminPass) {
+    return res.json({ success: true, message: "Login successful" });
+  } else {
+    return res.status(401).json({ success: false, message: "Invalid credentials" });
+  }
+});
