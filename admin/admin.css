@@ -214,3 +214,16 @@ button:hover {
     font-size: 1.5rem;
   }
 }
+
+.home-button {
+  display: inline-block;
+  margin-bottom: 1rem;
+  color: #2386f6;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.home-button:hover {
+  color: #1558c0;
+}
